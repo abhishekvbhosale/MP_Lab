@@ -18,7 +18,22 @@ section .text
 	mov rdx,%2
 	syscall
 	%endmacro
+	
+	menu1 :
+	print menu,lenm
+	accept choice,2
+	mov al,byte[choice]
+	
+	cmp al,31h
+	je addition
+	
+	cmp al,32h
+	je shifting
+	
+	cmp al,33h
+	je exit
 
+	addition:
 	print msg,len	
 	accept num,3
 	call convert
@@ -37,7 +52,41 @@ section .text
 	dec byte[no2]
 	jnz ll1
 	call displayproc
+	jmp menu1
 	
+	shifting:
+	print msg,len	
+	accept num,3
+	call convert
+	mov [no1],al
+	
+	print msg1,len1
+	accept num,3
+	call convert
+	mov [no2],al
+	
+	mov ax,[no1]
+	mov bx,[no2]
+	mov cx,0000h
+	mov [res],cx
+	
+	repeat:
+	shr bx,1
+	jnc cfo
+	add [res],ax
+	cfo:
+	shl ax,1
+	cmp ax,0000h
+	je axo
+	cmp bx,0000h
+	jne repeat
+	axo:
+	print msg2,len2
+	mov ax,[res]
+	call displayproc
+	jmp menu1
+	
+	exit:
 	mov rax,60
 	mov rdi,0
 	syscall
@@ -91,10 +140,17 @@ section .data
 		
 		msg2 db "The multiplication is --",10
 		len2 equ $-msg2
-
+		
+		menu db 10,"1.Multiplication addition",10
+	     db "2.Multiplication by shifting",10
+	     db "3.Exit",10
+		lenm equ $-menu
+		
 section .bss
 		
 		num resb 05
 		no1 resb 05
 		no2 resb 05
+		res resw 02
+		choice resb 02
 		disparr resb 32
