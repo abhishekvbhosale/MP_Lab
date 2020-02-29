@@ -47,7 +47,7 @@ section .bss
 
 	filename resb 10
 	filehandel resb 10
-	buff resb 32
-	buff_len resb 10
-	abuff_len resb 10
+	buff resb 64
+	buff_len resb 64
+	abuff_len resb 64
 
